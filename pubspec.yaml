@@ -1,0 +1,31 @@
+name: click_yt
+description: "A new Flutter project."
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.1
+
+dependencies:
+  device_info_plus: ^13.2.0
+  flutter:
+    sdk: flutter
+  flutter_downloader: ^1.12.1
+  intl: ^0.20.3
+  liquid_bottom_nav_bar: ^0.1.0
+  path_provider: ^2.1.6
+  permission_handler: ^12.0.1
+  provider: ^6.1.5+1
+  shared_preferences: ^2.5.5
+  youtube_explode_dart: ^3.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
