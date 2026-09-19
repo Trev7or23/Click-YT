@@ -1,4 +1,4 @@
-import 'package:click_yt/config/themes/app_colors.dart';
+import 'package:click_yt/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class StyledText extends StatelessWidget {

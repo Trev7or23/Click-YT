@@ -1,9 +1,9 @@
-import 'package:permission_handler/permission_handler.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-
 import 'dart:io';
 
-class StoragePermissionService {
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+class StoragePermissionDataSource {
   /// Solicita permisos para guardar audio y video
   static Future<bool> requestPermission() async {
     // Si es iOS, pedir permisos de fotos (o el que corresponda)
@@ -36,9 +36,6 @@ class StoragePermissionService {
     // Pedir permisos específicos para audio y video
     final audioStatus = await Permission.audio.request();
     final videoStatus = await Permission.videos.request();
-
-    // También puedes pedir Permission.photos si necesitas imágenes
-    // final photosStatus = await Permission.photos.request();
 
     return audioStatus.isGranted && videoStatus.isGranted;
   }

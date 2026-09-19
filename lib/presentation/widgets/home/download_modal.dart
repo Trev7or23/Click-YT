@@ -1,8 +1,9 @@
-import 'package:click_yt/config/themes/app_colors.dart';
-import 'package:click_yt/config/themes/text_styles.dart';
-import 'package:click_yt/domain/entities/download_task.dart';
+import 'package:click_yt/core/themes/app_colors.dart';
+import 'package:click_yt/core/themes/text_styles.dart';
+import 'package:click_yt/domain/entities/video_info.dart';
 import 'package:click_yt/presentation/widgets/ui/styled_text.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 enum CategoryIcon { audio, video }
 
@@ -12,7 +13,7 @@ class DownloadModal extends StatefulWidget {
   final VideoSizes sizes;
   final VoidCallback _onPressed;
 
-  const new({
+  const DownloadModal({
     super.key,
     required this.title,
     required this.thumbnailUrl,
@@ -96,7 +97,10 @@ class _DownloadModalState extends State<DownloadModal> {
             style: const ButtonStyle(
               backgroundColor: WidgetStatePropertyAll(AppColors.accent),
             ),
-            onPressed: widget._onPressed,
+            onPressed: () {
+              context.pop();
+              widget._onPressed;
+            },
             child: const StyledText('Download', fontSize: 27),
           ),
         ),

@@ -1,7 +1,8 @@
 // providers/download_provider.dart
-import 'package:click_yt/config/downloader/yt_downloader.dart';
+import 'package:click_yt/data/datasources/remote/youtube_data_source.dart';
+import 'package:click_yt/data/repositories/download_repository.dart';
 import 'package:click_yt/domain/entities/download_task.dart';
-import 'package:click_yt/services/download_service.dart';
+import 'package:click_yt/domain/entities/video_info.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:async';
@@ -11,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class DownloadProvider extends ChangeNotifier {
-  final DownloadService _downloadService = DownloadService();
+  final DownloadRepository _downloadRepository = DownloadRepository();
   final List<DownloadTask> _tasks = [];
   DownloadTask? _activeTask;
 
@@ -20,6 +21,13 @@ class DownloadProvider extends ChangeNotifier {
 
   DownloadProvider() {
     _loadHistory();
+  }
+
+  // Get Video Info
+  Future<VideoInfo> getVideoInfo(String url) async {
+    final yt = YoutubeDataSource.getManifest(url);
+    final videoInfo = await yt.getVideoInfo();
+    return videoInfo;
   }
 
   // Iniciar nueva descarga
@@ -33,7 +41,7 @@ class DownloadProvider extends ChangeNotifier {
         throw Exception('Ya hay una descarga en progreso');
       }
 
-      final ytDownloader = YtDownloader.getManifest(url);
+      final ytDownloader = YoutubeDataSource.getManifest(url);
       final video = await ytDownloader.getVideoInfo();
 
       // Crear tarea
@@ -52,7 +60,7 @@ class DownloadProvider extends ChangeNotifier {
       _saveHistory();
 
       // Iniciar descarga
-      final filePath = await _downloadService.downloadVideo(
+      final filePath = await _downloadRepository.downloadVideo(
         url: url,
         quality: quality,
         onProgress: (progress) {

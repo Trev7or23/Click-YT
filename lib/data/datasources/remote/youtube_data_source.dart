@@ -1,42 +1,41 @@
-import 'package:click_yt/domain/entities/download_task.dart';
+import 'package:click_yt/domain/entities/video_info.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class YtDownloader {
+class YoutubeDataSource {
   final YoutubeExplode yt;
   final Future<StreamManifest> manifestFuture;
   final String videoId;
 
-  YtDownloader({
+  YoutubeDataSource({
     required this.manifestFuture,
     required this.videoId,
     required this.yt,
   });
 
-  factory YtDownloader.getManifest(String url) {
-    var videoId = YtDownloader.extractVideoId(url);
+  factory YoutubeDataSource.getManifest(String url) {
+    var videoId = YoutubeDataSource.extractVideoId(url);
     if (videoId == null) throw 'Invalid Youtube Link';
     var yt = YoutubeExplode();
     var manifest = yt.videos.streamsClient.getManifest(videoId);
-    return YtDownloader(manifestFuture: manifest, videoId: videoId, yt: yt);
+    return YoutubeDataSource(manifestFuture: manifest, videoId: videoId, yt: yt);
   }
 
   Future<(StreamInfo streamInfo, Stream<List<int>>)> getMuxedStream() async {
     final manifest = await manifestFuture;
     final streamInfo = manifest.muxed.bestQuality;
-    final stream = yt.videos.streamsClient.get(streamInfo);
+    final stream = yt.videos.streams.get(streamInfo);
     return (streamInfo, stream);
   }
 
   Future<(StreamInfo streamInfo, Stream<List<int>> stream)>
-  getAudioStream() async {
+      getAudioStream() async {
     final manifest = await manifestFuture;
-    final streamInfo = manifest.audioOnly.first;
+    final streamInfo = manifest.audioOnly.withHighestBitrate();
     final stream = yt.videos.streamsClient.get(streamInfo);
     return (streamInfo, stream);
   }
 
-  Future<({String title, String thumbnailUrl, VideoSizes sizes})>
-  getVideoInfo() async {
+  Future<VideoInfo> getVideoInfo() async {
     // Title and thumbnail
     var video = await yt.videos.get(videoId);
     final title = video.title;
@@ -55,7 +54,7 @@ class YtDownloader {
     var videoMuxedSize = videoMuxedStreamInfo.size.totalMegaBytes;
     var videoHighestSize = videoHighestStreamInfo.size.totalMegaBytes;
 
-    return (
+    return VideoInfo(
       title: title,
       thumbnailUrl: thumbnail,
       sizes: (

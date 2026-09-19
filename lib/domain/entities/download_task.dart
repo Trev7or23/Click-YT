@@ -1,10 +1,4 @@
 
-typedef VideoSizes = ({
-  double audioSize,
-  double videoMuxedSize,
-  double videoHighestSize,
-});
-
 enum VideoQualities {
   audio('audio'),
   muxed('360'),

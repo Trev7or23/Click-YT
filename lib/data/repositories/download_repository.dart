@@ -1,29 +1,29 @@
-// services/download_service.dart
 import 'dart:io';
 
-import 'package:click_yt/config/downloader/yt_downloader.dart';
+import 'package:click_yt/data/datasources/platform/storage_permission_data_source.dart';
+import 'package:click_yt/data/datasources/remote/youtube_data_source.dart';
 import 'package:click_yt/domain/entities/download_task.dart';
-import 'package:click_yt/services/storage_permission_service.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class DownloadService {
+class DownloadRepository {
   Future<String> downloadVideo({
     required String url,
     required VideoQualities quality,
-    required Function(double progress) onProgress,
+    required void Function(double progress) onProgress,
   }) async {
     try {
       // Solicitar permisos en Android
       if (Platform.isAndroid) {
-        final status = await StoragePermissionService.requestPermission();
+        final status =
+            await StoragePermissionDataSource.requestPermission();
         if (!status) {
           throw Exception('Permiso de almacenamiento denegado');
         }
       }
 
       // Obtener información del video
-      final ytDownloader = YtDownloader.getManifest(url);
+      final ytDownloader = YoutubeDataSource.getManifest(url);
       final video = await ytDownloader.getVideoInfo();
 
       StreamInfo streamInfo;
@@ -61,6 +61,7 @@ class DownloadService {
 
       // Descargar con progreso
       final totalBytes = streamInfo.size.totalBytes;
+
       var downloadedBytes = 0;
 
       final outputStream = file.openWrite();
