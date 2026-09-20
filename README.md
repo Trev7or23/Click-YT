@@ -1,3 +1,3 @@
-# click_yt
+# click
 
 A new Flutter project.
