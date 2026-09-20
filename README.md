@@ -1,3 +1,3 @@
-# click
+# Click
 
 A new Flutter project.
