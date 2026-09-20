@@ -8,9 +8,9 @@ environment:
 
 dependencies:
   device_info_plus: ^13.2.0
+  filesize: ^2.0.1
   flutter:
     sdk: flutter
-  flutter_downloader: ^1.12.1
   go_router: ^18.0.1
   intl: ^0.20.3
   liquid_bottom_nav_bar: ^0.1.0

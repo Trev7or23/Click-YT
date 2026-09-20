@@ -1,12 +1,15 @@
 import 'dart:io';
 
+import 'package:click_yt/data/datasources/platform/storage_data_source.dart';
 import 'package:click_yt/data/datasources/platform/storage_permission_data_source.dart';
 import 'package:click_yt/data/datasources/remote/youtube_data_source.dart';
 import 'package:click_yt/domain/entities/download_task.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:click_yt/domain/entities/video_info.dart';
+import 'package:click_yt/domain/repositories/youtube_repository.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-class DownloadRepository {
+class YoutubeDownloadRepository implements YoutubeRepository {
+  @override
   Future<String> downloadVideo({
     required String url,
     required VideoQualities quality,
@@ -15,8 +18,7 @@ class DownloadRepository {
     try {
       // Solicitar permisos en Android
       if (Platform.isAndroid) {
-        final status =
-            await StoragePermissionDataSource.requestPermission();
+        final status = await StoragePermissionDataSource.requestPermission();
         if (!status) {
           throw Exception('Permiso de almacenamiento denegado');
         }
@@ -37,27 +39,12 @@ class DownloadRepository {
         (streamInfo, stream) = await ytDownloader.getMuxedStream();
       }
 
-      // Obtener directorio de descargas
-      Directory downloadsDir;
-      if (Platform.isAndroid) {
-        downloadsDir = Directory('/storage/emulated/0/Download');
-        if (!await downloadsDir.exists()) {
-          downloadsDir =
-              await getExternalStorageDirectory() ??
-              await getApplicationDocumentsDirectory();
-        }
-      } else {
-        downloadsDir = await getApplicationDocumentsDirectory();
-      }
-
       // Crear nombre de archivo
       final extension = streamInfo.container.name;
       final fileName =
           '${video.title.replaceAll(RegExp(r'[<>:"/\\|?*]'), '')}.$extension';
-      final filePath = '${downloadsDir.path}/$fileName';
 
-      // Descargar el archivo
-      final file = File(filePath);
+      final file = await StorageDataSource.saveContent(fileName);
 
       // Descargar con progreso
       final totalBytes = streamInfo.size.totalBytes;
@@ -79,9 +66,16 @@ class DownloadRepository {
       await outputStream.flush();
       await outputStream.close();
 
-      return filePath;
+      return file.path;
     } catch (e) {
       throw Exception('Error al descargar: $e');
     }
+  }
+
+  @override
+  Future<VideoInfo> getVideoInfo(String url) async {
+    final yt = YoutubeDataSource.getManifest(url);
+    final videoInfo = await yt.getVideoInfo();
+    return videoInfo;
   }
 }

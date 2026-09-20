@@ -2,9 +2,8 @@ import 'dart:async';
 
 import 'package:click_yt/core/themes/app_colors.dart';
 import 'package:click_yt/core/themes/text_styles.dart';
-import 'package:click_yt/data/datasources/remote/youtube_data_source.dart';
-import 'package:click_yt/domain/entities/download_task.dart';
-import 'package:click_yt/presentation/widgets/home/download_modal.dart';
+import 'package:click_yt/domain/value_objects/youtube_url.dart';
+import 'package:click_yt/presentation/widgets/home/download_modal/download_modal.dart';
 import 'package:click_yt/presentation/widgets/ui/app_snack_bar.dart';
 import 'package:click_yt/presentation/widgets/ui/loading_dialog.dart';
 import 'package:flutter/material.dart';
@@ -61,8 +60,8 @@ class _SearchFieldState extends State<SearchField> {
     if (url.isEmpty) return;
 
     try {
-      if (!YoutubeDataSource.isYoutubeUrl(url)) {
-        throw ErrorDescription('Invalid Url Link');
+      if (!YoutubeUrl.isValid(url)) {
+        throw const FormatException('Invalid Url Link');
       }
       //Show Loading Dialog
       unawaited(
@@ -82,9 +81,9 @@ class _SearchFieldState extends State<SearchField> {
             title: videoInfo.title,
             thumbnailUrl: videoInfo.thumbnailUrl,
             sizes: videoInfo.sizes,
-            onPressed: () async => await downloadProvider.startDownload(
+            onPressed: (quality) async => await downloadProvider.startDownload(
               url: url,
-              quality: VideoQualities.muxed,
+              quality: quality,
             ),
           ),
         );

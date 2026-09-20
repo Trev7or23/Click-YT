@@ -1,7 +1,7 @@
 typedef VideoSizes = ({
-  double audioSize,
-  double videoMuxedSize,
-  double videoHighestSize,
+  int audioSize,
+  int videoMuxedSize,
+  int videoHighestSize,
 });
 
 class VideoInfo {
@@ -15,4 +15,3 @@ class VideoInfo {
     required this.sizes,
   });
 }
-

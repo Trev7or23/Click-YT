@@ -60,32 +60,4 @@ class DownloadTask {
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'videoTitle': videoTitle,
-    'videoUrl': videoUrl,
-    'quality': quality,
-    'filePath': filePath,
-    'status': status.index,
-    'progress': progress,
-    'createdAt': createdAt.toIso8601String(),
-    'completedAt': completedAt?.toIso8601String(),
-    'errorMessage': errorMessage,
-  };
-
-  factory DownloadTask.fromJson(Map<String, dynamic> json) => DownloadTask(
-    id: json['id'] as String,
-    videoTitle: json['videoTitle'] as String,
-    videoUrl: json['videoUrl'] as String,
-    quality: json['quality'] as String,
-    filePath: json['filePath'] as String?,
-    status: DownloadStatus.values[json['status'] as int],
-    progress: json['progress'] as double? ?? 0.0,
-    createdAt: DateTime.parse(json['createdAt'] as String),
-    completedAt: json['completedAt'] != null
-        ? DateTime.parse(json['completedAt'] as String)
-        : null,
-    errorMessage: json['errorMessage'] as String?,
-  );
 }

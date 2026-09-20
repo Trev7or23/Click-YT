@@ -5,7 +5,6 @@
     <!-- Para Android 10+ -->
     <!-- <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" /> -->
     <!-- Permisos necesarios -->
-    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
     <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
     <!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> -->
     <!-- <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" /> -->
@@ -16,6 +15,10 @@
     <!-- <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> -->
     <!-- <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" /> -->
     <!-- <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" /> -->
+
+
+    <!-- Internet Permission  -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Android 13 (API 33) en adelante: permisos específicos -->
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
@@ -40,16 +43,15 @@
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true"
     >
-
-        <provider
-            android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
-            android:authorities="${applicationId}.flutter_downloader.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
+        <!-- <provider -->
+        <!--     android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider" -->
+        <!--     android:authorities="${applicationId}.flutter_downloader.provider" -->
+        <!--     android:exported="false" -->
+        <!--     android:grantUriPermissions="true"> -->
+        <!--     <meta-data -->
+        <!--         android:name="android.support.FILE_PROVIDER_PATHS" -->
+        <!--         android:resource="@xml/provider_paths" /> -->
+        <!-- </provider> -->
 
         <activity
             android:name=".MainActivity"

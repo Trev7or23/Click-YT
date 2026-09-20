@@ -1,4 +1,5 @@
 import 'package:click_yt/domain/entities/video_info.dart';
+import 'package:click_yt/domain/value_objects/youtube_url.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class YoutubeDataSource {
@@ -13,11 +14,14 @@ class YoutubeDataSource {
   });
 
   factory YoutubeDataSource.getManifest(String url) {
-    var videoId = YoutubeDataSource.extractVideoId(url);
-    if (videoId == null) throw 'Invalid Youtube Link';
+    final videoId = YoutubeUrl(url).videoId;
     var yt = YoutubeExplode();
     var manifest = yt.videos.streamsClient.getManifest(videoId);
-    return YoutubeDataSource(manifestFuture: manifest, videoId: videoId, yt: yt);
+    return YoutubeDataSource(
+      manifestFuture: manifest,
+      videoId: videoId,
+      yt: yt,
+    );
   }
 
   Future<(StreamInfo streamInfo, Stream<List<int>>)> getMuxedStream() async {
@@ -28,7 +32,7 @@ class YoutubeDataSource {
   }
 
   Future<(StreamInfo streamInfo, Stream<List<int>> stream)>
-      getAudioStream() async {
+  getAudioStream() async {
     final manifest = await manifestFuture;
     final streamInfo = manifest.audioOnly.withHighestBitrate();
     final stream = yt.videos.streamsClient.get(streamInfo);
@@ -44,15 +48,15 @@ class YoutubeDataSource {
 
     // Audio Stream Info
     final audioStreamInfo = manifest.audioOnly.withHighestBitrate();
-    final audioSize = audioStreamInfo.size.totalMegaBytes;
+    final audioSize = audioStreamInfo.size.totalBytes;
 
     // Video Stream Info
 
     var videoMuxedStreamInfo = manifest.muxed.bestQuality;
     var videoHighestStreamInfo = manifest.video.withHighestBitrate();
 
-    var videoMuxedSize = videoMuxedStreamInfo.size.totalMegaBytes;
-    var videoHighestSize = videoHighestStreamInfo.size.totalMegaBytes;
+    var videoMuxedSize = videoMuxedStreamInfo.size.totalBytes;
+    var videoHighestSize = videoHighestStreamInfo.size.totalBytes;
 
     return VideoInfo(
       title: title,
@@ -64,29 +68,5 @@ class YoutubeDataSource {
       ),
     );
   }
-
-  static bool isYoutubeUrl(String url) {
-    final uri = Uri.tryParse(url);
-
-    if (uri == null) return false;
-    if (uri.host.contains('youtu.be')) return true;
-    if (uri.host.contains('youtube.com')) return true;
-
-    return false;
-  }
-
-  static String? extractVideoId(String url) {
-    final uri = Uri.tryParse(url);
-    if (uri == null) return null;
-
-    if (uri.host.contains('youtube.com')) {
-      if (uri.pathSegments.contains('shorts')) return uri.pathSegments.last;
-      return uri.queryParameters['v'];
-    }
-
-    if (uri.host.contains('youtu.be')) {
-      return uri.pathSegments.first;
-    }
-    return null;
-  }
 }
+
