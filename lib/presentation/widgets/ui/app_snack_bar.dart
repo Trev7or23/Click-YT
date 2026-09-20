@@ -1,4 +1,4 @@
-import 'package:click_yt/config/themes/app_colors.dart';
+import 'package:click_yt/core/themes/app_colors.dart';
 import 'package:click_yt/presentation/widgets/ui/styled_text.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +24,7 @@ class AppSnackBar {
     IconData icon,
   ) {
     ScaffoldMessenger.of(context).showSnackBar(
+      snackBarAnimationStyle: _snackBarAnimation(),
       SnackBar(
         margin: const EdgeInsets.all(12),
         elevation: 10,
@@ -41,4 +42,9 @@ class AppSnackBar {
       ),
     );
   }
+
+  static AnimationStyle _snackBarAnimation() => const AnimationStyle(
+    duration: Duration(milliseconds: 500),
+    reverseDuration: Duration(milliseconds: 300),
+  );
 }

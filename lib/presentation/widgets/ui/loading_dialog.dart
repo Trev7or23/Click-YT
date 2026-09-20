@@ -8,7 +8,7 @@ class LoadingDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      // canPop: false,
       child: Center(
         child: Card(
           elevation: 8,

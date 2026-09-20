@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AppDownloadsPage extends StatelessWidget {
+  static const String name = 'videos_page';
+  const AppDownloadsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,7 +169,7 @@ class AppDownloadsPage extends StatelessWidget {
   }
 
   void _showClearDialog(BuildContext context) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Limpiar Historial'),
@@ -188,7 +191,7 @@ class AppDownloadsPage extends StatelessWidget {
             },
             child: const Text(
               'Limpiar',
-              style: const TextStyle(color: Colors.red),
+              style: TextStyle(color: Colors.red),
             ),
           ),
         ],
